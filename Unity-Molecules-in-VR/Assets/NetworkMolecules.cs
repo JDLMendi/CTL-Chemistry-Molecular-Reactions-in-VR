@@ -3,40 +3,48 @@ using Ubiq.Messaging;
 
 public class NetworkMolecules : MonoBehaviour
 {
-    private NetworkContext context;
-    public ChemAnimationControl chemAnimControl;
+    public MoleculeController moleculeController;
+    
+    [Header("Network Role")]
+    [Tooltip("Set to true for the object that controls the state (the 'owner' or 'master' client).")]
     public bool isHost = false;
+
+    [Header("Animation Control")]
+    [Tooltip("Controls the animation's normalized time (0.0 to 1.0). This value is synchronized.")]
+    [Range(0f, 0.99f)]
+    public float animProgress = 0f;
+
+    private NetworkContext context;
     private struct Message
     {
+        public Quaternion rotation;
         public Vector3 scale;
         public float animProgress;
 
-        public Message(Vector3 scale, float animProgress)
+        public Message(Quaternion rotation, Transform modelTransform, float animProgress)
         {
-            this.scale = scale;
+            this.rotation = rotation;
+            this.scale = modelTransform.localScale;
             this.animProgress = animProgress;
         }
     }
 
-    private void Start()
+    void Start()
     {
         context = NetworkScene.Register(this);
     }
-
-    private void FixedUpdate()
+    
+    void LateUpdate()
     {
         if (isHost)
         {
-            Vector3 currentScale = chemAnimControl.transform.localScale;
-            float currentProgress = chemAnimControl.animProgress;
-            context.SendJson(new Message(currentScale, currentProgress));
+            context.SendJson(new Message(transform.rotation, moleculeController.model.transform, animProgress));
         }
     }
 
     public void ProcessMessage(ReferenceCountedSceneGraphMessage msg)
     {
         var data = msg.FromJson<Message>();
-        chemAnimControl.transform.localScale = data.scale;
-        chemAnimControl.animProgress = data.animProgress;
+        moleculeController.UpdateMolecule(data.rotation, data.scale, data.animProgress);
     }
 }
