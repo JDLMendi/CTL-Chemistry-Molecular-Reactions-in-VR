@@ -46,5 +46,11 @@ public class NetworkMolecules : MonoBehaviour
     {
         var data = msg.FromJson<Message>();
         moleculeController.UpdateMolecule(data.rotation, data.scale, data.animProgress);
+        moleculeController.animProgress =  animProgress;
+    }
+
+    public void ToggleHost()
+    {
+        isHost = !isHost;
     }
 }

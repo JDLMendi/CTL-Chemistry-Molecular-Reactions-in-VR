@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class MoleculeController : MonoBehaviour
@@ -22,6 +23,11 @@ public class MoleculeController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         currentScaleVector = model.transform.localScale;
         currRotation = transform.rotation;
+    }
+
+    private void Update()
+    {
+        UpdateAnimation(animProgress);
     }
 
     public void UpdateMolecule(Quaternion rotation, Vector3 scale, float remoteAnimProgress)
