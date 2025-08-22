@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using System.Collections;
 
 public class MoleculeManagerMain : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class MoleculeManagerMain : MonoBehaviour
     public Quaternion currentRotation;
     public float animationProgress;
     
-    private Animator anim;
+    public Animator anim;
     private XRGrabInteractable grabInteractable;
 
     private bool isMovingForward = false;
@@ -43,6 +44,8 @@ public class MoleculeManagerMain : MonoBehaviour
         
         anim = model.GetComponent<Animator>();
         grabInteractable = model.GetComponent<XRGrabInteractable>();
+
+      
 
         if (anim == null)
         {
@@ -144,5 +147,43 @@ public class MoleculeManagerMain : MonoBehaviour
         }
         currentRotation = model.transform.rotation;
     }
-    
+
+    public void PlayAnimationOnce()
+    {
+        if (anim != null)
+        {
+            StartCoroutine(PlayAnimationOnceSimple());
+        }
+    }
+
+    private IEnumerator PlayAnimationOnceSimple()
+    {
+        // Store original states
+        bool wasMovingForward = isMovingForward;
+        bool wasMovingBackward = isMovingBackward;
+
+        // Stop any current movement
+        isMovingForward = false;
+        isMovingBackward = false;
+
+        // Reset to beginning
+        animationProgress = 0f;
+        anim.SetFloat("progress", 0f);
+
+        // Play through animation
+        isMovingForward = true;
+
+        // Wait for animation to complete (assuming it takes about 1 second at speed 1)
+        float animationDuration = 1f / animationSpeed;
+        yield return new WaitForSeconds(animationDuration);
+
+        // Stop animation
+        isMovingForward = false;
+
+        // Restore original states if needed
+        isMovingForward = wasMovingForward;
+        isMovingBackward = wasMovingBackward;
+    }
+
 }
+

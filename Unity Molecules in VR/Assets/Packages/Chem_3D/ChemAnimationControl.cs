@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class ChemAnimationControl : MonoBehaviour
 {
-    private Animator anim;
-    private float animProgress;
+    public Animator anim;
+    public float animProgress;
 
     private Vector3 scale_change;
     private Vector3 curr_scale;
@@ -16,6 +16,7 @@ public class ChemAnimationControl : MonoBehaviour
         scale_change = new Vector3(0.01f, 0.01f, 0.01f);
         curr_scale = transform.localScale;
     }
+
 
     void Update()
     {
@@ -32,5 +33,6 @@ public class ChemAnimationControl : MonoBehaviour
 
         animProgress = Mathf.Clamp(animProgress, 0f, 0.99f);
         anim.SetFloat("progress", animProgress);
+
     }
 }
