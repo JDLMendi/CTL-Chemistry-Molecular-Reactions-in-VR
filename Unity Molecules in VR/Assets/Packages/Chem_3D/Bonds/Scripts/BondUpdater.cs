@@ -1,24 +1,49 @@
 using UnityEngine;
 
 public class BondUpdater : MonoBehaviour {
-    public GameObject atomA;
-    public GameObject atomB;
-    public GameObject larger_atom;
+    public bool visible;
+    public bool partial;
     public float bond_threshold;
-    public Bond bond_data;
+    public Bond bond_data; // Bond.cs data
 
-    private int bonds; // 1 = Single bond, 2 = Double bond, etc.
+    public Mesh sphere;
+    public Mesh cylinder;
+
+    private int bonds; // 1 = Single bond, 2 = Double bond, 3 = Triple bond
+    private int ini_bonds;
+    private GameObject larger_atom; // Bond forming/breaking control
+    private GameObject prefab_2bonds;
+    private GameObject prefab_3bonds;
 
     void Start() {
-        if (atomA.transform.lossyScale.x > atomB.transform.lossyScale.x) { larger_atom = atomA; }
-        else { larger_atom = atomB; }
+        ini_bonds = bonds;
+        if (bond_data.atomA.transform.lossyScale.x > bond_data.atomB.transform.lossyScale.x) { larger_atom = bond_data.atomA; }
+        else { larger_atom = bond_data.atomB; }
+
+        prefab_2bonds = gameObject.transform.GetChild(0).gameObject;
+        prefab_3bonds = gameObject.transform.GetChild(1).gameObject;
+
+        visible = true;
+    }
+
+    void Update() {
+        // Bond Display
+        this.GetComponent<Renderer>().enabled = (bonds == 1 && visible);
+        prefab_2bonds.SetActive(bonds == 2 && visible);
+        prefab_3bonds.SetActive(bonds == 3 && visible);
+
+        if (partial) {
+            this.GetComponent<MeshFilter>().sharedMesh = sphere;
+        } else {
+            this.GetComponent<MeshFilter>().sharedMesh = cylinder;
+        }
     }
 
     void LateUpdate() {
-        if (atomA == null || atomB == null) return;
+        if (bond_data.atomA == null || bond_data.atomB == null) return;
 
-        Vector3 posA = atomA.transform.position;
-        Vector3 posB = atomB.transform.position;
+        Vector3 posA = bond_data.atomA.transform.position;
+        Vector3 posB = bond_data.atomB.transform.position;
 
         // Position
         transform.position = (posA + posB) / 2f;
@@ -35,27 +60,18 @@ public class BondUpdater : MonoBehaviour {
         );
 
         // Bond Threshold: Only show bond if atoms are close enough together.
-        if(Vector3.Distance(posA, posB) > bond_threshold * larger_atom.transform.lossyScale.x) {
-            bond_data.broken = true;
-            if (bonds > 1) {
-                for (var i=0; i < bonds; i++) {
-                    transform.GetChild(i).gameObject.GetComponent<Renderer>().enabled = false;
-                }
-            } else {
-                GetComponent<Renderer>().enabled = false;
-            }
-        } else {
-            bond_data.broken = false;
-            if (bonds > 1) {
-                for (var i = 0; i < bonds; i++) {
-                    transform.GetChild(i).gameObject.GetComponent<Renderer>().enabled = true;
-                }
-            } else {
-                GetComponent<Renderer>().enabled = true;
-            }
-        }
+        visible = (Vector3.Distance(posA, posB)) < (bond_threshold * larger_atom.transform.lossyScale.x);
+        // Partial Bond Threshold = Within 10% away from bond threshold.
+        partial = (Vector3.Distance(posA, posB)) > (bond_threshold * larger_atom.transform.lossyScale.x * 0.9);
     }
 
-    public void SetBonds(int _bonds) { bonds = _bonds; }
-    public int GetBonds() { return bonds; }
+    public void SetBonds(int _bonds) { 
+        bonds = _bonds; 
+        switch(bonds) {
+            case 1: bond_data.bondType = BondType.Single; break;
+            case 2: bond_data.bondType = BondType.Double; break;
+            case 3: bond_data.bondType = BondType.Triple; break;
+        }
+    } public int GetBonds() { return bonds; }
+    public int GetIniBonds() { return ini_bonds; }
 }

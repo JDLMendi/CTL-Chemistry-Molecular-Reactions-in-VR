@@ -4,24 +4,27 @@ using UnityEngine.UI;
 public class ChargeUI : MonoBehaviour
 {
     private int charge;
+    private GameObject charge_sprite;
 
     public Sprite pos_charge;
     public Sprite neg_charge;
+
+    public void Start() {
+        charge_sprite = gameObject.transform.GetChild(0).gameObject;
+    }
 
     public void SetCharge(int new_charge) {
         charge = new_charge;
 
         // Update sprite.
         if(charge == 0) {
-            GetComponent<Image>().enabled = false;
+            charge_sprite.GetComponent<SpriteRenderer>().enabled = false;
         } else if(charge > 0) {
-            GetComponent<Image>().enabled = true;
-            GetComponent<Image>().sprite = pos_charge;
-            GetComponent<RectTransform>().sizeDelta = new Vector2(30, 30);
+            charge_sprite.GetComponent<SpriteRenderer>().enabled = true;
+            charge_sprite.GetComponent<SpriteRenderer>().sprite = pos_charge;
         } else {
-            GetComponent<Image>().enabled = true;
-            GetComponent<Image>().sprite = neg_charge;
-            GetComponent<RectTransform>().sizeDelta = new Vector2(30, 10);
+            charge_sprite.GetComponent<SpriteRenderer>().enabled = true;
+            charge_sprite.GetComponent<SpriteRenderer>().sprite = neg_charge;
         }
     }
     public int GetCharge() { return charge; }

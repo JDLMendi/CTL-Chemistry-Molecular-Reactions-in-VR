@@ -7,7 +7,7 @@ public class NetworkManager : MonoBehaviour
     [Header("Host Role")]
     public bool isHost = false;
     private NetworkContext context;
-    public MoleculeManagerMain manager;
+    public MoleculeHandler handler;
 
     [Header("Debug Information")]
     public Vector3 scale;
@@ -38,7 +38,7 @@ public class NetworkManager : MonoBehaviour
         if (isHost)
         {
             Debug.Log("Message Sent");
-            context.SendJson(new Message(manager.currentScale, manager.currentRotation, manager.animationProgress));
+            context.SendJson(new Message(handler.currentScale, handler.currentRotation, handler.animationProgress));
         }
     }
 
@@ -54,7 +54,7 @@ public class NetworkManager : MonoBehaviour
         #endif
         
         animationProgress = data.animationProgress;
-        manager.UpdateMoleculeState(data.animationProgress, data.scale, data.rotation);
+        handler.UpdateMoleculeState(data.animationProgress, data.scale, data.rotation);
     }
 
     public void ToggleHost()

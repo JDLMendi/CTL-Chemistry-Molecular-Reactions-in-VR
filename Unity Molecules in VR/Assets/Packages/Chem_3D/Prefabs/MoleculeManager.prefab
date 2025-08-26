@@ -146,9 +146,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e59e50f5a4ec50944acdfd75bd1824e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  singleBondPrefab: {fileID: 5863410372411339847, guid: c2b8a314665796047a679a03a5bec3cd, type: 3}
-  doubleBondPrefab: {fileID: 5863410372411339847, guid: c4f97972316f6e94a9b84c6a36181a92, type: 3}
+  bondPrefab: {fileID: 5863410372411339847, guid: 36e37facb3a02404697c5377625b190e, type: 3}
+  bondDistanceThreshold: 0.08
   moleculeCanvas: {fileID: 8604884945589579299}
   uiChargePrefab: {fileID: 4279932756591034592, guid: 4348767aa466a934cb8fc7378524b074, type: 3}
-  bondDistanceThreshold: 0.08
   bonds: []
+  bondTriggers: []
