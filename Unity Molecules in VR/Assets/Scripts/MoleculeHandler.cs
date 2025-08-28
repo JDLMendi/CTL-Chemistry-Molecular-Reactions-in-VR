@@ -49,6 +49,8 @@ public class MoleculeHandler : MonoBehaviour
 
     private void Update()
     {
+        if (model == null) return;
+        
         // --- Scaling Logic ---
         float scaleValue = model.transform.localScale.x;
 

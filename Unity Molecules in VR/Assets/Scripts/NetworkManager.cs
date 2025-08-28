@@ -14,13 +14,13 @@ public class NetworkManager : MonoBehaviour
     public Quaternion rotation;
     public float animationProgress;
 
-    private struct Message
+    private struct StateUpdate
     {
         public Vector3 scale;
         public Quaternion rotation;
         public float animationProgress;
 
-        public Message(Vector3 scale, Quaternion rotation, float animationProgress)
+        public StateUpdate(Vector3 scale, Quaternion rotation, float animationProgress)
         {
             this.scale = scale;
             this.rotation = rotation;
@@ -38,14 +38,14 @@ public class NetworkManager : MonoBehaviour
         if (isHost)
         {
             Debug.Log("Message Sent");
-            context.SendJson(new Message(handler.currentScale, handler.currentRotation, handler.animationProgress));
+            context.SendJson(new StateUpdate(handler.currentScale, handler.currentRotation, handler.animationProgress));
         }
     }
 
     public void ProcessMessage(ReferenceCountedSceneGraphMessage message)
     {
         Debug.Log("Message Received");
-        var data = message.FromJson<Message>();
+        var data = message.FromJson<StateUpdate>();
         
         #if UNITY_EDITOR
         scale = data.scale;
