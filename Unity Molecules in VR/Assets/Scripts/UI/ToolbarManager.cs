@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ToolbarManager : MonoBehaviour
 {
     public MoleculeHandler handler;
+    public Image loop_button;
     private AnimationManager animationManager;
 
     private void Start() {
@@ -20,6 +22,11 @@ public class ToolbarManager : MonoBehaviour
 
     public void ToggleLoop() {
         animationManager.ToggleLoop();
+        if(animationManager.isLooping) {
+            loop_button.color = new Color32(80, 255, 255, 255);
+        } else {
+            loop_button.color = new Color32(255, 255, 255, 255);
+        }
     }
 
     public void NextFrame() {
