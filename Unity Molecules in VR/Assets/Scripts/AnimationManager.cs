@@ -5,7 +5,8 @@ public class AnimationManager : MonoBehaviour
 {
     [Header("Component References")]
     [Tooltip("The Animator component to control.")]
-    public Animator anim;
+    public Animator[] anims;
+    public int anim_index;
 
     [Header("Animation Control")]
     [Tooltip("How fast the animation scrubs or plays.")]
@@ -27,13 +28,14 @@ public class AnimationManager : MonoBehaviour
 
     private void Start()
     {
-        if (anim == null)
+        anim_index = 0;
+        if (anims == null)
         {
              Debug.LogError("Animator component is not assigned in the Inspector!", this);
              return;
         }
 
-        // Initialize the animation at the beginning
+        // Initialize sthe animation at the beginning
         SetAnimationProgress(0f);
     }
 
@@ -78,9 +80,9 @@ public class AnimationManager : MonoBehaviour
         // Clamp the value to ensure it stays within the valid range
         animationProgress = Mathf.Clamp(newProgress, 0.0f, 0.99f);
         
-        if (anim != null)
+        if (anims != null)
         {
-            anim.SetFloat("progress", animationProgress);
+            anims[anim_index].SetFloat("progress", animationProgress);
         }
     }
 

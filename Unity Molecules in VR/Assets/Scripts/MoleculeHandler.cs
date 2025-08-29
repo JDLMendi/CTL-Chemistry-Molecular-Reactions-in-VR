@@ -9,8 +9,9 @@ public class MoleculeHandler : MonoBehaviour
     public AnimationManager animationManager;
     
     [Header("Object References")]
-    [Tooltip("The GameObject containing the Model (fbx) and Animator.")]
-    public GameObject model;
+    [Tooltip("The GameObject(s) containing the Model (fbx) and Animator.")]
+    public GameObject[] models;
+    public int model_index;
 
     [Header("Scaling Control")]
     [Tooltip("How fast the model scales when a button is held.")]
@@ -32,7 +33,9 @@ public class MoleculeHandler : MonoBehaviour
 
     private void Start()
     {
-        if (model == null)
+        model_index = 0;
+
+        if (models == null)
         {
             Debug.LogError("Model GameObject is not assigned in the Inspector!", this);
             return;
@@ -43,8 +46,8 @@ public class MoleculeHandler : MonoBehaviour
             Debug.LogWarning("AnimationManager is not assigned. Animation controls will not work.", this);
         }
 
-        grabInteractable = model.GetComponent<XRGrabInteractable>();
-        currentScale = model.transform.localScale;
+        grabInteractable = models[0].GetComponent<XRGrabInteractable>();
+        currentScale = models[0].transform.localScale;
     }
 
     private void Update()
@@ -52,7 +55,7 @@ public class MoleculeHandler : MonoBehaviour
         if (model == null) return;
         
         // --- Scaling Logic ---
-        float scaleValue = model.transform.localScale.x;
+        float scaleValue = models[model_index].transform.localScale.x;
 
         if (isScalingUp)
         {
@@ -64,11 +67,11 @@ public class MoleculeHandler : MonoBehaviour
         }
         
         scaleValue = Mathf.Clamp(scaleValue, minScale, maxScale);
-        model.transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
+        models[model_index].transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
 
         // Update debug info
-        currentRotation = model.transform.rotation;
-        currentScale = model.transform.localScale;
+        currentRotation = models[model_index].transform.rotation;
+        currentScale = models[model_index].transform.localScale;
         animationProgress = animationManager.animationProgress;
     }
 
@@ -103,17 +106,24 @@ public class MoleculeHandler : MonoBehaviour
         newScale.x = Mathf.Clamp(newScale.x, minScale, maxScale);
         newScale.y = Mathf.Clamp(newScale.y, minScale, maxScale);
         newScale.z = Mathf.Clamp(newScale.z, minScale, maxScale);
-        if (model != null)
+        if (models != null)
         {
-            model.transform.localScale = newScale;
+            models[model_index].transform.localScale = newScale;
         }
-        currentScale = model.transform.localScale;
+        currentScale = models[model_index].transform.localScale;
 
         // Set Rotation
-        if (model != null)
+        if (models != null)
         {
-            model.transform.rotation = newRotation;
+            models[model_index].transform.rotation = newRotation;
         }
-        currentRotation = model.transform.rotation;
+        currentRotation = models[model_index].transform.rotation;
+    }
+
+    public void ZoomIn() {
+        UpdateMoleculeState(animationProgress, currentScale + new Vector3(0.05f, 0.05f, 0.05f), currentRotation);
+    }
+    public void ZoomOut() {
+        UpdateMoleculeState(animationProgress, currentScale - new Vector3(0.05f, 0.05f, 0.05f), currentRotation);
     }
 }
