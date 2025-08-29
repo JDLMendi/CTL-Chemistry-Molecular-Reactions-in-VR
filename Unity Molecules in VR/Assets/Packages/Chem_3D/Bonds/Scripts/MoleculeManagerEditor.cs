@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(MoleculeManager))]
 public class MoleculeManagerEditor : Editor {
     GameObject atomA;
@@ -154,3 +155,4 @@ public class MoleculeManagerEditor : Editor {
         }
     }
 }
+#endif

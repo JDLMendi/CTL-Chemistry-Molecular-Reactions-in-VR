@@ -1,8 +1,16 @@
+using System;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using System.Linq;
 
 public class ModelSwapper : MonoBehaviour
 {
+    private MoleculeHandler handler;
+    private AnimationManager animationManager;
+    private MoleculeHandler moleculeHandler;
+    
     public int model_index;
     public Image model_img;
     public Text model_text;
@@ -10,6 +18,9 @@ public class ModelSwapper : MonoBehaviour
     public Sprite[] model_sprites;
     public string[] model_names;
     public GameObject[] molecule_models;
+    
+    [Header("Events")]
+    public UnityEvent<int> OnModelSwapped;
 
     public MoleculeHandler molecule_handler;
     public AnimationManager anim_manager;
@@ -19,6 +30,8 @@ public class ModelSwapper : MonoBehaviour
 
     void Start() {
         panel_enable = true;
+        animationManager = FindFirstObjectByType<AnimationManager>();
+        moleculeHandler = FindObjectOfType<MoleculeHandler>();
     }
 
     void Update() {
@@ -35,7 +48,10 @@ public class ModelSwapper : MonoBehaviour
 
     public void LoadModel() {
         for(var i=0; i < molecule_models.Length; i++) {
-            molecule_models[i].SetActive(i == model_index);
+            var model =  molecule_models[i];
+            model.SetActive(i == model_index);
+            
+            OnModelSwapped?.Invoke(model_index);
         }
 
         molecule_handler.model_index = model_index;
