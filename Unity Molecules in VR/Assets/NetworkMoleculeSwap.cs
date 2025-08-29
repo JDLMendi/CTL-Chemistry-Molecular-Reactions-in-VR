@@ -22,6 +22,7 @@ public class NetworkMoleculeSwap : MonoBehaviour
     private void Start()
     {
         context = NetworkScene.Register(this);
+        
         modelSwapper = FindFirstObjectByType<ModelSwapper>();
         networkManager = FindObjectOfType<NetworkManager>();
         
