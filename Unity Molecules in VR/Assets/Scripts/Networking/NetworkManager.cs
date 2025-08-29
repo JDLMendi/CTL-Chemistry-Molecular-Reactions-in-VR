@@ -9,8 +9,8 @@ public class NetworkManager : MonoBehaviour
     public string myID;
 
     [Header("Host Role")]
-    public string currentHostUuid;
-    public bool isHost = false;
+    public HostManager hostManager;
+    
     private NetworkContext context;
     public RoomClient roomClient;
     public MoleculeHandler handler;
@@ -35,18 +35,9 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    private struct HostAnnouncement
-    {
-        public string hostUuid;
-
-        public HostAnnouncement(string hostUuid)
-        {
-            this.hostUuid = hostUuid;
-        }
-    }
-
     private void Start()
     {
+        hostManager = FindFirstObjectByType<HostManager>();
         context = NetworkScene.Register(this);
     }
 
@@ -54,12 +45,9 @@ public class NetworkManager : MonoBehaviour
     {
         myID = roomClient.Me.uuid;
         text.text = "ID: "  + myID;
-        if (isHost)
+        if (hostManager.isHost)
         {
-            // Debug.Log("Message Sent");
             context.SendJson(new StateUpdate(handler.currentScale, handler.currentRotation, handler.animationProgress));
-            
-            context.SendJson(new HostAnnouncement(myID));
         }
         else
         {
@@ -70,41 +58,15 @@ public class NetworkManager : MonoBehaviour
     private void UpdatePeerVisibility() {}
     public void ProcessMessage(ReferenceCountedSceneGraphMessage message)
     {
-        string json = message.ToString();
-
-        if (json.Contains("\"hostUuid\""))
-        {
-            var announcement = message.FromJson<HostAnnouncement>();
-            currentHostUuid = announcement.hostUuid;
-        }
-
-        else if (json.Contains("\"animationProgress\""))
-        {
-            var state = message.FromJson<StateUpdate>();
-        
-            #if UNITY_EDITOR
-            scale = state.scale;
-            rotation = state.rotation;
-            animationProgress = state.animationProgress;
-            #endif
-        
-            handler.UpdateMoleculeState(state.animationProgress, state.scale, state.rotation);
-        }
-    }
-    public void ToggleHost()
-    {
-        isHost = !isHost;
-        currentHostUuid = roomClient.Me.uuid;
-    }
-
-    public void MakeHost()
-    {
-        isHost = true;
-    }
-
-    public void StopHost()
-    {
-        isHost = false;
-    }
+        var state = message.FromJson<StateUpdate>();
     
+        #if UNITY_EDITOR
+        scale = state.scale;
+        rotation = state.rotation;
+        animationProgress = state.animationProgress;
+        #endif
+    
+        handler.UpdateMoleculeState(state.animationProgress, state.scale, state.rotation);
+        
+    }
 }

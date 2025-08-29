@@ -5,7 +5,7 @@ using Ubiq.Messaging;
 public class NetworkMoleculeSwap : MonoBehaviour
 {
     public ModelSwapper modelSwapper;
-    public NetworkManager networkManager;
+    public HostManager hostManager;
     private int modelIndex;
     private NetworkContext context;
 
@@ -24,7 +24,7 @@ public class NetworkMoleculeSwap : MonoBehaviour
         context = NetworkScene.Register(this);
         
         modelSwapper = FindFirstObjectByType<ModelSwapper>();
-        networkManager = FindObjectOfType<NetworkManager>();
+        hostManager = FindObjectOfType<HostManager>();
         
         // Adds SwapModel as a Listener to when this is invoked
         modelSwapper.OnModelSwapped.AddListener(SwapModel);
@@ -34,7 +34,7 @@ public class NetworkMoleculeSwap : MonoBehaviour
     private void SwapModel(int modelIndex)
     {
         Debug.Log("Swap Invoked!");
-        if (networkManager.isHost)
+        if (hostManager.isHost)
         {
             context.SendJson(new ModelChange(modelIndex));
         }
