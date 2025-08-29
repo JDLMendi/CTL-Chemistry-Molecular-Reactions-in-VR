@@ -8,6 +8,8 @@ public class ToolbarManager : MonoBehaviour
     public Image loop_button;
     private AnimationManager animationManager;
 
+    public bool isLooping = false;
+
     private void Start() {
         animationManager = handler.animationManager;
     }
@@ -40,5 +42,18 @@ public class ToolbarManager : MonoBehaviour
         _progress -= 0.01f;
         _progress = Mathf.Clamp(_progress, 0f, 0.99f);
         animationManager.animationProgress = _progress;
+    }
+
+    public void RestartToolBar()
+    {
+        // Reset the isLooping flag
+        if (animationManager.isLooping)
+        {
+            animationManager.isLooping = false;
+            loop_button.color = new Color32(255, 255, 255, 255);
+        }
+        
+        // Reset the Pause flag
+
     }
 }

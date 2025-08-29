@@ -26,48 +26,57 @@ public class HostManager : MonoBehaviour
     {
         roomClient = FindAnyObjectByType<RoomClient>();
         roomClient.OnJoinedRoom.AddListener(OnRoomUpdated_RoomUpdate);
+        roomClient.OnPeerAdded.AddListener(OnRoomUpdated_RoomUpdate);
     }
 
+    private void OnRoomUpdated_RoomUpdate(IPeer peer)
+    {
+        var hostIDProperty = roomClient.Room[hostID];
+        if (hostIDProperty == roomClient.Me.uuid)
+        {
+            EnableHostWindows(); 
+        }
+        else
+        {
+            DisableHostWindows();
+        }
+    }
+    
     private void OnRoomUpdated_RoomUpdate(IRoom room)
     {
         // We establish a property in the room which identifies who is the host, in our case the host is the first person in the room
-        var hostIDProperty = room[hostID];
+        var hostIDProperty = roomClient.Room[hostID];
         if (string.IsNullOrEmpty(hostIDProperty))
         {
              roomClient.Room[hostID] = roomClient.Me.uuid;
         }
+        
     }
 
     private void Update()
     {
+        #if UNITY_EDITOR
         currentHostID = roomClient.Room[hostID];
-
-        if (roomClient.JoinedRoom)
-        {
-            if ((roomClient.Room[hostID] == roomClient.Me.uuid))
-            {
-                isHost = true;
-                EnableHostWindows();
-            }
-            else
-            {
-                isHost = false;
-                DisableHostWindows();
-            }
-        }
+        #endif
     }
 
     private void DisableHostWindows()
     {
+        isHost = false;
         textObject.SetActive(false);
         toolbar.SetActive(false);
         modelSwapperPanel.SetActive(false);
+        
+        // Bug when loop is previously enabled
+        toolbar.GetComponent<ToolbarManager>().RestartToolBar();
     }
     
-    private void EnableHostWindows()
+    public void EnableHostWindows()
     {
+        isHost = true;
         textObject.SetActive(true);
         toolbar.SetActive(true);
         modelSwapperPanel.SetActive(true);
     }
+    
 }
