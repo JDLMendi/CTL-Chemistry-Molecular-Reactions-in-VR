@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class NetworkManager : MonoBehaviour
 {
-    [Header("Host Role")]
     public string myID;
+
+    [Header("Host Role")]
     public string currentHostUuid;
     public bool isHost = false;
     private NetworkContext context;
@@ -58,7 +59,7 @@ public class NetworkManager : MonoBehaviour
             // Debug.Log("Message Sent");
             context.SendJson(new StateUpdate(handler.currentScale, handler.currentRotation, handler.animationProgress));
             
-            context.SendJson(new HostAnnouncement(roomClient.Me.uuid));
+            context.SendJson(new HostAnnouncement(myID));
         }
         else
         {
@@ -66,6 +67,7 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    private void UpdatePeerVisibility() {}
     public void ProcessMessage(ReferenceCountedSceneGraphMessage message)
     {
         string json = message.ToString();
@@ -89,15 +91,10 @@ public class NetworkManager : MonoBehaviour
             handler.UpdateMoleculeState(state.animationProgress, state.scale, state.rotation);
         }
     }
-
-    public void UpdatePeerVisibility()
-    {
-        // Debug.Log("Updating Peer Visibility");
-    }
-
     public void ToggleHost()
     {
         isHost = !isHost;
+        currentHostUuid = roomClient.Me.uuid;
     }
 
     public void MakeHost()

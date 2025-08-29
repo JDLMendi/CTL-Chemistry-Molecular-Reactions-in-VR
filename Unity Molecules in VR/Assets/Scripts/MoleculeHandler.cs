@@ -7,9 +7,8 @@ public class MoleculeHandler : MonoBehaviour
     [Header("Manager References")]
     [Tooltip("Reference to the script that handles animation logic.")]
     public AnimationManager animationManager;
-    
-    [Header("Object References")]
-    [Tooltip("The GameObject(s) containing the Model (fbx) and Animator.")]
+
+    [Header("Object References")] [Tooltip("The GameObject(s) containing the Model (fbx) and Animator.")]
     public GameObject[] models;
     public int model_index;
 
@@ -52,7 +51,7 @@ public class MoleculeHandler : MonoBehaviour
 
     private void Update()
     {
-        if (model == null) return;
+        if (models == null) return;
         
         // --- Scaling Logic ---
         float scaleValue = models[model_index].transform.localScale.x;

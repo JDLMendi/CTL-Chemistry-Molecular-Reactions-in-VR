@@ -22,12 +22,6 @@ public class ModelSwapper : MonoBehaviour
     [Header("Events")]
     public UnityEvent<int> OnModelSwapped;
 
-    private void Start()
-    {
-        animationManager = FindFirstObjectByType<AnimationManager>();
-        moleculeHandler = FindObjectOfType<MoleculeHandler>();
-    }
-
     public MoleculeHandler molecule_handler;
     public AnimationManager anim_manager;
 
@@ -36,6 +30,8 @@ public class ModelSwapper : MonoBehaviour
 
     void Start() {
         panel_enable = true;
+        animationManager = FindFirstObjectByType<AnimationManager>();
+        moleculeHandler = FindObjectOfType<MoleculeHandler>();
     }
 
     void Update() {
@@ -54,17 +50,6 @@ public class ModelSwapper : MonoBehaviour
         for(var i=0; i < molecule_models.Length; i++) {
             var model =  molecule_models[i];
             model.SetActive(i == model_index);
-
-            if (model.activeSelf)
-            {
-                animationManager.anim = model.GetComponentInChildren<Animator>();
-                animationManager.animationProgress = 0.0f;
-                
-                Transform fbxTransform = model.transform.Cast<Transform>().FirstOrDefault(t => t.name.StartsWith("fbx_"));
-                GameObject fbxChild = fbxTransform != null ? fbxTransform.gameObject : null;
-
-                moleculeHandler.model = fbxChild;
-            }
             
             OnModelSwapped?.Invoke(model_index);
         }
