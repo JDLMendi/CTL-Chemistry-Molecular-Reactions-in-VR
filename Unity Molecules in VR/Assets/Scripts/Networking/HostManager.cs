@@ -5,6 +5,7 @@ using Ubiq.Messaging;
 using Ubiq.Rooms;
 using Ubiq.Samples;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class HostManager : MonoBehaviour
 {
@@ -12,7 +13,17 @@ public class HostManager : MonoBehaviour
     public bool isHost = false;
     public string hostID;
     public string currentHostID;
-
+    
+    [Header("Peer Handler")]
+    public PeerHandler peerHandler;
+    
+    [Header("Peer Audio")]
+    public bool isPeerAudible = true;
+    public UnityEvent<bool> onPeerAudible;
+    
+    [Header("Peer Visbility")]
+    public bool isPeerVisible = false;
+    public UnityEvent<bool> onPeerVisible;
     
     [Header("References")]
     public GameObject textObject;
@@ -21,12 +32,44 @@ public class HostManager : MonoBehaviour
     
     // Private Variables
     private RoomClient roomClient;
-    
-    public void OnEnable()
+    private NetworkContext context;
+
+    private struct HostCommnad
     {
+        public string command;
+
+        public HostCommnad(string command)
+        {
+            this.command = command;
+        }
+    }
+    
+    private void OnEnable()
+    {
+        context = NetworkScene.Register(this);
+        
+        // Initialising Events
+        onPeerVisible = new UnityEvent<bool>();
+        onPeerAudible = new UnityEvent<bool>();
+        
         roomClient = FindAnyObjectByType<RoomClient>();
+        peerHandler = FindAnyObjectByType<PeerHandler>();
+        
         roomClient.OnJoinedRoom.AddListener(OnRoomUpdated_RoomUpdate);
         roomClient.OnPeerAdded.AddListener(OnRoomUpdated_RoomUpdate);
+    }
+
+    private void Update()
+    {
+        #if UNITY_EDITOR
+        currentHostID = roomClient.Room[hostID];
+        #endif
+    }
+
+    private void Start()
+    {
+        ToggleVisbility();
+        ToggleAudio();
     }
 
     private void OnRoomUpdated_RoomUpdate(IPeer peer)
@@ -52,14 +95,7 @@ public class HostManager : MonoBehaviour
         }
         
     }
-
-    private void Update()
-    {
-        #if UNITY_EDITOR
-        currentHostID = roomClient.Room[hostID];
-        #endif
-    }
-
+    
     private void DisableHostWindows()
     {
         isHost = false;
@@ -77,6 +113,48 @@ public class HostManager : MonoBehaviour
         textObject.SetActive(true);
         toolbar.SetActive(true);
         modelSwapperPanel.SetActive(true);
+    }
+
+    public void ToggleVisbility()
+    {
+        SendCommnad("ToggleVisibility");
+        if (isPeerVisible)
+        {
+            onPeerVisible.Invoke(false);
+            isPeerVisible = false;
+        } else if (!isPeerVisible)
+        {
+            onPeerVisible.Invoke(true);
+            isPeerVisible = true;
+        }
+    }
+
+    public void ToggleAudio()
+    {
+        SendCommnad("ToggleAudio");
+        if (isPeerAudible)
+        {
+            onPeerAudible.Invoke(false);
+            isPeerAudible = false;
+        } else if (!isPeerAudible)
+        {
+            onPeerAudible.Invoke(true);
+            isPeerAudible = true;
+        }
+    }
+
+    private void SendCommnad(string command)
+    {
+        context.SendJson(new HostCommnad(command));
+    }
+
+    public void ProcessMessage(ReferenceCountedSceneGraphMessage message)
+    {
+        var data = message.FromJson<HostCommnad>();
+        
+        if (data.command == "ToggleVisibility") ToggleVisbility();
+        else if (data.command == "ToggleAudio") ToggleAudio();
+        else Debug.Log("Unknown Command: " +  data.command);
     }
     
 }
