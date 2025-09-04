@@ -4,9 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Linq;
+using Ubiq.Rooms;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class ModelSwapper : MonoBehaviour
 {
+
+    public HostManager hostManager;
     private MoleculeHandler handler;
     private AnimationManager animationManager;
     private MoleculeHandler moleculeHandler;
@@ -32,6 +36,8 @@ public class ModelSwapper : MonoBehaviour
         panel_enable = true;
         animationManager = FindFirstObjectByType<AnimationManager>();
         moleculeHandler = FindObjectOfType<MoleculeHandler>();
+        
+        hostManager = FindFirstObjectByType<HostManager>();
     }
 
     void Update() {
@@ -50,7 +56,6 @@ public class ModelSwapper : MonoBehaviour
         for(var i=0; i < molecule_models.Length; i++) {
             var model =  molecule_models[i];
             model.SetActive(i == model_index);
-            
             OnModelSwapped?.Invoke(model_index);
         }
 
@@ -58,6 +63,8 @@ public class ModelSwapper : MonoBehaviour
         molecule_handler.UpdateMoleculeState(0f, Vector3.one, Quaternion.identity);
         anim_manager.anim_index = model_index;
         anim_manager.animationProgress = 0f;
+        
+        
     }
 
     public void TogglePanel() {

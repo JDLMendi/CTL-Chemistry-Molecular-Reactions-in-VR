@@ -8,6 +8,7 @@ using UnityEngine;
 public class PeerHandler : MonoBehaviour
 {
     public GameObject[] peersObjects;
+    public bool showPeers = false;
     
     [Header("Host Manager")]
     public HostManager hostManager;
@@ -19,6 +20,8 @@ public class PeerHandler : MonoBehaviour
     [Header("Ubiq Room Client")]
     public RoomClient roomClient;
     
+    private ChildRendererToggler childRendererToggler;
+    
     public void Start()
     {
         peerDict = new Dictionary<string, GameObject>();
@@ -27,12 +30,11 @@ public class PeerHandler : MonoBehaviour
         hostManager = FindFirstObjectByType<HostManager>();
         avatarManager = FindFirstObjectByType<AvatarManager>();
         
-        // Listens whenever a toggleable has been invokved
-        hostManager.onPeerVisible.AddListener(ToggleVisibility);
-        
         // Listens to whenever a peer joins or leaves the room
         roomClient.OnPeerAdded.AddListener(AddPeer);
         roomClient.OnPeerRemoved.AddListener(RemovePeer);
+        
+        childRendererToggler = FindFirstObjectByType<ChildRendererToggler>();
     }
 
     // Finds the GameObject of the joined Peer via their UUID into the Peers List
@@ -91,9 +93,8 @@ public class PeerHandler : MonoBehaviour
 
     #endregion
     
-    private void Update()
+    public void ToggleVisibility()
     {
-        if (peerDict == null) return;
-        peersObjects = peerDict.Values.ToArray();
+        childRendererToggler.ToggleAllChildRenderers();
     }
 }
