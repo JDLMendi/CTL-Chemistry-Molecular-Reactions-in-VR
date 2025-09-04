@@ -9,21 +9,18 @@ using UnityEngine.Events;
 
 public class HostManager : MonoBehaviour
 {
+    [Header("Room Properties")]
+    public RoomProperties roomProperties;
+    
     [Header("Host")]
     public bool isHost = false;
-    public string hostID;
     public string currentHostID;
-    
-    [Header("Peer Handler")]
-    public PeerHandler peerHandler;
     
     [Header("Peer Audio")]
     public bool isPeerAudible = true;
-    public UnityEvent<bool> onPeerAudible;
     
     [Header("Peer Visbility")]
-    public bool isPeerVisible = false;
-    public UnityEvent<bool> onPeerVisible;
+    public bool isPeerVisible = true;
     
     [Header("References")]
     public GameObject textObject;
@@ -32,28 +29,10 @@ public class HostManager : MonoBehaviour
     
     // Private Variables
     private RoomClient roomClient;
-    private NetworkContext context;
-
-    private struct HostCommnad
-    {
-        public string command;
-
-        public HostCommnad(string command)
-        {
-            this.command = command;
-        }
-    }
     
     private void OnEnable()
     {
-        context = NetworkScene.Register(this);
-        
-        // Initialising Events
-        onPeerVisible = new UnityEvent<bool>();
-        onPeerAudible = new UnityEvent<bool>();
-        
         roomClient = FindAnyObjectByType<RoomClient>();
-        peerHandler = FindAnyObjectByType<PeerHandler>();
         
         roomClient.OnJoinedRoom.AddListener(OnRoomUpdated_RoomUpdate);
         roomClient.OnPeerAdded.AddListener(OnRoomUpdated_RoomUpdate);
@@ -62,19 +41,13 @@ public class HostManager : MonoBehaviour
     private void Update()
     {
         #if UNITY_EDITOR
-        currentHostID = roomClient.Room[hostID];
+        currentHostID = roomClient.Room[roomProperties.hostID];
         #endif
-    }
-
-    private void Start()
-    {
-        ToggleVisbility();
-        ToggleAudio();
     }
 
     private void OnRoomUpdated_RoomUpdate(IPeer peer)
     {
-        var hostIDProperty = roomClient.Room[hostID];
+        var hostIDProperty = roomClient.Room[roomProperties.hostID];
         if (hostIDProperty == roomClient.Me.uuid)
         {
             EnableHostWindows(); 
@@ -88,10 +61,10 @@ public class HostManager : MonoBehaviour
     private void OnRoomUpdated_RoomUpdate(IRoom room)
     {
         // We establish a property in the room which identifies who is the host, in our case the host is the first person in the room
-        var hostIDProperty = roomClient.Room[hostID];
+        var hostIDProperty = roomClient.Room[roomProperties.hostID];
         if (string.IsNullOrEmpty(hostIDProperty))
         {
-             roomClient.Room[hostID] = roomClient.Me.uuid;
+             roomClient.Room[roomProperties.hostID] = roomClient.Me.uuid;
         }
         
     }
@@ -117,44 +90,19 @@ public class HostManager : MonoBehaviour
 
     public void ToggleVisbility()
     {
-        SendCommnad("ToggleVisibility");
         if (isPeerVisible)
         {
-            onPeerVisible.Invoke(false);
+            roomClient.Room[roomProperties.isPeerVisible] = "false";
             isPeerVisible = false;
         } else if (!isPeerVisible)
         {
-            onPeerVisible.Invoke(true);
+            roomClient.Room[roomProperties.isPeerVisible] = "true";
             isPeerVisible = true;
         }
     }
 
     public void ToggleAudio()
     {
-        SendCommnad("ToggleAudio");
-        if (isPeerAudible)
-        {
-            onPeerAudible.Invoke(false);
-            isPeerAudible = false;
-        } else if (!isPeerAudible)
-        {
-            onPeerAudible.Invoke(true);
-            isPeerAudible = true;
-        }
+        return;
     }
-
-    private void SendCommnad(string command)
-    {
-        context.SendJson(new HostCommnad(command));
-    }
-
-    public void ProcessMessage(ReferenceCountedSceneGraphMessage message)
-    {
-        var data = message.FromJson<HostCommnad>();
-        
-        if (data.command == "ToggleVisibility") ToggleVisbility();
-        else if (data.command == "ToggleAudio") ToggleAudio();
-        else Debug.Log("Unknown Command: " +  data.command);
-    }
-    
 }

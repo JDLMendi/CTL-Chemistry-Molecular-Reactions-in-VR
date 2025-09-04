@@ -4,9 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Linq;
+using Ubiq.Rooms;
 
 public class ModelSwapper : MonoBehaviour
 {
+    [Header("Ubiq Stuff")]
+    public RoomClient roomClient;
+    public RoomProperties roomProperties;
+    public HostManager hostManager;
+    
+    [Header("Other Variables")]
     private MoleculeHandler handler;
     private AnimationManager animationManager;
     private MoleculeHandler moleculeHandler;
@@ -19,9 +26,6 @@ public class ModelSwapper : MonoBehaviour
     public string[] model_names;
     public GameObject[] molecule_models;
     
-    [Header("Events")]
-    public UnityEvent<int> OnModelSwapped;
-
     public MoleculeHandler molecule_handler;
     public AnimationManager anim_manager;
 
@@ -32,11 +36,16 @@ public class ModelSwapper : MonoBehaviour
         panel_enable = true;
         animationManager = FindFirstObjectByType<AnimationManager>();
         moleculeHandler = FindObjectOfType<MoleculeHandler>();
+        
+        roomClient = FindFirstObjectByType<RoomClient>();
+        roomProperties = FindFirstObjectByType<RoomProperties>();
     }
 
     void Update() {
         model_img.sprite = model_sprites[model_index];
         model_text.text = model_names[model_index];
+
+        // Constantly updates what model we are working with for the Peers to be aware even when they join
     }
 
     public void NextIndex() {
@@ -50,8 +59,7 @@ public class ModelSwapper : MonoBehaviour
         for(var i=0; i < molecule_models.Length; i++) {
             var model =  molecule_models[i];
             model.SetActive(i == model_index);
-            
-            OnModelSwapped?.Invoke(model_index);
+            if (hostManager.isHost) roomClient.Room[roomProperties.moleculeIndex] = model_index.ToString();
         }
 
         molecule_handler.model_index = model_index;

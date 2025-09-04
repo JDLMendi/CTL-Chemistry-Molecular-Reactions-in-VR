@@ -1,13 +1,18 @@
 using System;
 using UnityEngine;
 using Ubiq.Messaging;
+using Ubiq.Rooms;
 
 public class NetworkMoleculeSwap : MonoBehaviour
 {
     public ModelSwapper modelSwapper;
     public HostManager hostManager;
     private int modelIndex;
-    private NetworkContext context;
+
+    [Header("Ubiq Stuff")]
+    public RoomClient roomClient;
+    public RoomProperties roomProperties;
+    public int lastKnownModel;
 
     private struct ModelChange
     {
@@ -21,31 +26,24 @@ public class NetworkMoleculeSwap : MonoBehaviour
 
     private void Start()
     {
-        context = NetworkScene.Register(this);
-        
         modelSwapper = FindFirstObjectByType<ModelSwapper>();
-        hostManager = FindObjectOfType<HostManager>();
-        
-        // Adds SwapModel as a Listener to when this is invoked
-        modelSwapper.OnModelSwapped.AddListener(SwapModel);
+        hostManager = FindFirstObjectByType<HostManager>();
     }
 
-    // This should be called when there is a model swap and only send the message if they are the host
-    private void SwapModel(int modelIndex)
+    public void Update()
     {
-        Debug.Log("Swap Invoked!");
-        if (hostManager.isHost)
+        // Safely parse the current state from the room property
+        int.TryParse(roomClient.Room[roomProperties.isPeerVisible], out int currentModel);
+
+        // Add a check if the host has enabled freeview
+        
+        
+        // Only call the function if the state has actually changed
+        if (currentModel != lastKnownModel)
         {
-            context.SendJson(new ModelChange(modelIndex));
+            modelSwapper.model_index = currentModel;
+            lastKnownModel = currentModel;
+            modelSwapper.LoadModel();
         }
     }
-
-    public void ProcessMessage(ReferenceCountedSceneGraphMessage message)
-    {
-        var data = message.FromJson<ModelChange>();
-        modelSwapper.model_index = data.modelIndex;
-        modelSwapper.LoadModel();
-    }
-    
-    
 }
