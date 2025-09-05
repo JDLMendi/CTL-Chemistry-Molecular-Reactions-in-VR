@@ -6,6 +6,7 @@ public class ModelSwapper : MonoBehaviour
     public int model_index;
     public Image model_img;
     public Text model_text;
+    public Text model_nametag;
 
     public Sprite[] model_sprites;
     public string[] model_names;
@@ -42,6 +43,8 @@ public class ModelSwapper : MonoBehaviour
         molecule_handler.UpdateMoleculeState(0f, Vector3.one, Quaternion.identity);
         anim_manager.anim_index = model_index;
         anim_manager.animationProgress = 0f;
+
+        model_nametag.text = model_names[model_index];
     }
 
     public void TogglePanel() {
