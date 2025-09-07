@@ -1,6 +1,7 @@
 using System;
 using Ubiq.Rooms;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class HostManager : MonoBehaviour
 {
@@ -11,15 +12,15 @@ public class HostManager : MonoBehaviour
     
     [Header("Room Properties")] public RoomProperties properties;
 
-    [Header("References")] 
-    public GameObject hostUI;
-    public GameObject hostToolbar;
-    public GameObject ModelSwapper;
+    [Header("Host Events")]
+    public UnityEvent<bool>  toggleHost;
     
     private RoomClient _roomClient;
 
     private void Awake()
     {
+        toggleHost = new UnityEvent<bool>();
+        
         properties = FindFirstObjectByType<RoomProperties>();
         _roomClient = FindFirstObjectByType<RoomClient>();
 
@@ -43,9 +44,8 @@ public class HostManager : MonoBehaviour
 
     private void ToggleTools(bool toggle)
     {
-        hostToolbar.SetActive(toggle);
-        hostUI.SetActive(toggle);
-        ModelSwapper.SetActive(toggle);
+        Debug.Log("Host has been toggled as:" + toggle);
+        toggleHost?.Invoke(toggle);
     }
     
     public void ToggleVisibility()

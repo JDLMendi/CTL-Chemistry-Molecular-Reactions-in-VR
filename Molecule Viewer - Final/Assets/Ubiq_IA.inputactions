@@ -1,0 +1,45 @@
+{
+    "name": "Ubiq_IA",
+    "maps": [
+        {
+            "name": "Main Actions",
+            "id": "bc8e705a-d01c-41fc-a2b4-2d1ca134b47d",
+            "actions": [
+                {
+                    "name": "Menu",
+                    "type": "Button",
+                    "id": "4e86c716-d5b9-4983-86af-c2d01b5cce3d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6dc13ed6-2daa-4db1-80af-9af033140ff9",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7b00f631-2a6e-4e3c-940e-6a9c91c7c3cd",
+                    "path": "<OculusTouchController>{LeftHand}/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

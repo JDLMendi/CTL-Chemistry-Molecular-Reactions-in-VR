@@ -27,11 +27,7 @@ public class ModelSwapper : MonoBehaviour
     public void GoBack()
     {
         if (molecules.Length == 0) return;
-        
-        if (moleculeIndex < 0)
-        {
-            moleculeIndex = molecules.Length - 1;
-        }
+        moleculeIndex = (moleculeIndex - 1 + molecules.Length) % molecules.Length;
     }
 
     public void LoadModel()
