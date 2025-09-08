@@ -91,13 +91,13 @@ public class ToolbarManager : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void NextFrame() {
         var _progress = animationManager.animationProgress;
-        _progress += 0.01f;
+        _progress += 0.03f;
         _progress = Mathf.Clamp(_progress, 0f, 0.99f);
         animationManager.animationProgress = _progress;
     }
     public void PrevFrame() {
         var _progress = animationManager.animationProgress;
-        _progress -= 0.01f;
+        _progress -= 0.03f;
         _progress = Mathf.Clamp(_progress, 0f, 0.99f);
         animationManager.animationProgress = _progress;
     }
