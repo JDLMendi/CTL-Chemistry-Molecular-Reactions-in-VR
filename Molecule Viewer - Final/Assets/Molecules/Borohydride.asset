@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Borohydride
   m_EditorClassIdentifier: 
   image: {fileID: 21300000, guid: 387227f599ab7e8468e2f8412d5b4921, type: 3}
-  moleculeName: Borohydride
+  moleculeName: Diastereoselective Ketone Reduction Chelation zinc borohydride
   prefab: {fileID: 0}

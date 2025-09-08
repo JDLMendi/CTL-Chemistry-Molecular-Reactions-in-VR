@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ModelSwapper : MonoBehaviour
@@ -10,6 +11,14 @@ public class ModelSwapper : MonoBehaviour
     [Header("References")]
     public Image modelImage;
     public Text moleculeName;
+    
+    [Header("Events")]
+    public UnityEvent<int> onModelLoaded;
+
+    private void Awake()
+    {
+        onModelLoaded = new UnityEvent<int>();
+    }
 
     private void Update()
     {
@@ -30,11 +39,15 @@ public class ModelSwapper : MonoBehaviour
         moleculeIndex = (moleculeIndex - 1 + molecules.Length) % molecules.Length;
     }
 
+    public void UpdateModel(int moleculeIndex)
+    {
+        this.moleculeIndex = moleculeIndex;
+        LoadModel();
+    }
+
     public void LoadModel()
     {
         Debug.Log("Loading Model in Index: " +  moleculeIndex);
-        var prefab = molecules[moleculeIndex].prefab;
-        
-        
+        onModelLoaded?.Invoke(moleculeIndex);
     }
 }

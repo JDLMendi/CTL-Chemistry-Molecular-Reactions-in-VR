@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4467f6c3b47040840ab7f7665d8bddbe, type: 3}
   m_Name: Molecule Catalogue
   m_EditorClassIdentifier: 
-  prefabs: []
+  prefabs:
+  - {fileID: 8272903992815582364, guid: fd193209ace8f354d9f848e677eca15f, type: 3}
+  - {fileID: 3631003804469140304, guid: 1aa3f33768253e54ba11f342028ce480, type: 3}
+  - {fileID: 8117555649331253772, guid: bec907fec7aadad4cb6ecc7c53ba41f8, type: 3}
