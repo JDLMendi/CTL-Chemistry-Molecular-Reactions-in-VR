@@ -3812,6 +3812,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moleculeModel: {fileID: 1807912660782958726}
+  animator: {fileID: 6364697484873769808}
   minScale: 0.1
   maxScale: 0.5
 --- !u!1 &8145621033703535094

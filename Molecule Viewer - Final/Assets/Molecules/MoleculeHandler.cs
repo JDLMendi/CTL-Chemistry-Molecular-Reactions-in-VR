@@ -9,6 +9,7 @@ public class MoleculeHandler : MonoBehaviour
     public ModelSwapper modelSwapper;
     public NetworkSpawnManager  networkSpawnManager;
     public HostManager hostManager;
+    public AnimationHandler animationHandler;
     
     [Header("Messaging Data")]
     public bool isHost;
@@ -16,6 +17,7 @@ public class MoleculeHandler : MonoBehaviour
     [Header("Molecule Data")]
     public GameObject currentMolecule;
     public MoleculeTransformer currentMoleculeTransformer;
+    public Animator currentAnimator;
 
     public float currentAnimationProgress;
     public Quaternion currentRotation;
@@ -26,6 +28,7 @@ public class MoleculeHandler : MonoBehaviour
     {
         networkSpawnManager = FindFirstObjectByType<NetworkSpawnManager>();
         hostManager = FindFirstObjectByType<HostManager>();
+        animationHandler = FindFirstObjectByType<AnimationHandler>();
     }
 
     private void Start()
@@ -56,6 +59,9 @@ public class MoleculeHandler : MonoBehaviour
         obj.transform.SetPositionAndRotation(pos, rot);
         currentMolecule = obj;
         currentMoleculeTransformer = obj.GetComponent<MoleculeTransformer>();
+        currentAnimator =  currentMolecule.GetComponentInChildren<Animator>();
+        currentAnimationProgress = 0.0f;
+        currentMoleculeTransformer.SetMoleculeAnimation(currentAnimationProgress);
     }
 
     public void SpawnMolecule(int moleculeIndex)
@@ -67,11 +73,28 @@ public class MoleculeHandler : MonoBehaviour
         }
     }
 
+    public void UpdateMoleculeTransform(Vector3 scale, Quaternion rotation)
+    {
+        if (currentMoleculeTransformer)
+        {
+            currentMoleculeTransformer.SetMoleculeTransform(scale, rotation);
+        }
+    }
+
+    public void UpdateMoleculeAnimation(float animationProgress)
+    {
+        if (currentMoleculeTransformer)
+        {
+            currentMoleculeTransformer.SetMoleculeAnimation(animationProgress);
+        }
+    }
+
     public void UpdateMoleculeState(Vector3 scale, Quaternion rotation, float animationProgress)
     {
         if (currentMoleculeTransformer)
         {
-            currentMoleculeTransformer.SetMoleculeTransform(scale, rotation, animationProgress);
+            currentMoleculeTransformer.SetMoleculeState(scale, rotation, animationProgress);
         }
-    }
+    } 
 }
+

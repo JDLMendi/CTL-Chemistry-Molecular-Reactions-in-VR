@@ -14,6 +14,7 @@ public class MoleculeTransformer : MonoBehaviour
     
     [Header("References")]
     public GameObject moleculeModel;
+    public Animator animator;
 
     [Header("Settings")]
     public float minScale = 0.1f;
@@ -80,12 +81,23 @@ public class MoleculeTransformer : MonoBehaviour
     }
     
 
-    public void SetMoleculeTransform(Vector3 scale, Quaternion rotation, float animationProgress)
+    public void SetMoleculeTransform(Vector3 scale, Quaternion rotation)
     {
         float clampedX = Mathf.Clamp(scale.x, minScale, maxScale);
         currentScale = new Vector3(clampedX, clampedX, clampedX);
         currentRotation = rotation;
+        
+    }
+
+    public void SetMoleculeAnimation(float animationProgress)
+    {
         currentAnimationProgress = animationProgress;
+    }
+
+    public void SetMoleculeState(Vector3 scale, Quaternion rotation, float animationProgress)
+    {
+        SetMoleculeTransform(scale, rotation);
+        SetMoleculeAnimation(animationProgress);
     }
 
     private void OnSelectEntered(SelectEnterEventArgs args)

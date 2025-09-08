@@ -1,9 +1,13 @@
 using Ubiq.Messaging;
 using Ubiq.Rooms;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NetworkMolecule : MonoBehaviour
 {
+    public GameObject toolbar;
+    public Button swapperButton;
+    
     [Header("Molecule Room Property")] 
     public string moleculeIndex = "Molecule Index";
     
@@ -13,7 +17,7 @@ public class NetworkMolecule : MonoBehaviour
     [Header("Molecule Handler")]
     public bool isFreeMovement;
     public MoleculeHandler handler;
-
+    
     private NetworkContext context;
     private int previousIndex = 0;
 
@@ -70,11 +74,25 @@ public class NetworkMolecule : MonoBehaviour
 
         if (isFreeMovement || handler.isHost)
         {
-            handler.currentMoleculeTransformer.ToggleGrabbable(true);
+            ToggleFreeMovement(true);
         }
         else
         {
-            handler.currentMoleculeTransformer.ToggleGrabbable(false);
+            ToggleFreeMovement(false);
+        }
+    }
+
+    private void ToggleFreeMovement(bool toggle)
+    {
+        handler.currentMoleculeTransformer.ToggleGrabbable(toggle);
+        handler.animationHandler.enabled = toggle;
+        toolbar.SetActive(toggle);
+        swapperButton.interactable = false;
+        
+        if (toggle == false)
+        {
+            swapperButton.interactable = true;
+            toolbar.GetComponent<ToolbarManager>().ResetToolbar();
         }
     }
 
