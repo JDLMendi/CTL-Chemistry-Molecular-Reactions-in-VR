@@ -58,7 +58,7 @@ public class AnimationManager : MonoBehaviour
             if (isLooping)
             {
                 // If looping is on, reset the progress to the beginning.
-                animationProgress = 0f;
+                Invoke("ResetAnimation", 0.33f);
             }
             else
             {
@@ -69,6 +69,10 @@ public class AnimationManager : MonoBehaviour
         
         // Apply the updated progress to the Animator
         SetAnimationProgress(animationProgress);
+    }
+
+    public void ResetAnimation() {
+        animationProgress = 0f;
     }
     
     /// <summary>
