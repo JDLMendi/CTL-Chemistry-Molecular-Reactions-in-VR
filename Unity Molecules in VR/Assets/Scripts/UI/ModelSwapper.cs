@@ -32,12 +32,16 @@ public class ModelSwapper : MonoBehaviour
     public GameObject model_canvas;
     private bool panel_enable;
 
+    public GameObject model_label;
+    private Text model_label_text;
+
     void Start() {
         panel_enable = true;
         animationManager = FindFirstObjectByType<AnimationManager>();
         moleculeHandler = FindObjectOfType<MoleculeHandler>();
         
         hostManager = FindFirstObjectByType<HostManager>();
+        model_label_text = model_label.transform.GetChild(0).GetChild(0).gameObject.GetComponent<Text>();
     }
 
     void Update() {
@@ -63,8 +67,9 @@ public class ModelSwapper : MonoBehaviour
         molecule_handler.UpdateMoleculeState(0f, Vector3.one, Quaternion.identity);
         anim_manager.anim_index = model_index;
         anim_manager.animationProgress = 0f;
-        
-        
+
+        if(!model_label.activeSelf) { model_label.SetActive(true); } 
+        model_label_text.text = model_names[model_index];
     }
 
     public void TogglePanel() {
