@@ -4,11 +4,15 @@ using UnityEngine.EventSystems;
 public class ToolbarManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 
+    [Header("Togglers")] public TogglerUI[] togglers;
+    
     [Header("Molecule Handlers")] 
     public MoleculeHandler handler;
     public AnimationHandler animationHandler;
     public ModelSwapper modelSwapper;
 
+    [Header("Scale Value")] public float scaleStep = 0.05f;
+    
     [Header("Visibility Settings")] 
     public GameObject socialMenu;
     public GameObject toolbarCanvas;
@@ -43,6 +47,11 @@ public class ToolbarManager : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         animationHandler.animationProgress = 0.0f;
         animationHandler.isPlaying = false;
         animationHandler.isLooping = false;
+        
+        foreach (var toggle in togglers)
+        {
+            toggle.ResetToggle();
+        }
     }
 
     private void Update()
@@ -135,17 +144,24 @@ public class ToolbarManager : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void ScaleUp()
     {
         Debug.Log("Scale Up");
-        
+        var currentScale = handler.currentScale;
+        var scaleVector = new Vector3(scaleStep, scaleStep, scaleStep);
+        handler.UpdateMoleculeTransform(currentScale +  scaleVector);
     }
 
     public void ScaleDown()
     {
         Debug.Log("Scale Down");
+        var currentScale = handler.currentScale;
+        var scaleVector = new Vector3(scaleStep, scaleStep, scaleStep);
+        handler.UpdateMoleculeTransform(currentScale - scaleVector);
     }
 
     public void Reset()
     {
-        modelSwapper.LoadModel();
+        var scale = new Vector3(0.3f, 0.3f, 0.3f);
+        var rotation = new Quaternion(0, 0, 0, 1);
+        handler.UpdateMoleculeState(scale, rotation, 0);
         ResetToolbar();
     }
 

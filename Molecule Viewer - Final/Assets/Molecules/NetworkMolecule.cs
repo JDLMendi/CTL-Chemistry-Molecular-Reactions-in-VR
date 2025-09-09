@@ -10,6 +10,8 @@ public class NetworkMolecule : MonoBehaviour
     
     [Header("Molecule Room Property")] 
     public string moleculeIndex = "Molecule Index";
+
+    public int currentIndex;
     
     [Header("Ubiq")]
     public RoomClient roomClient;
@@ -19,8 +21,7 @@ public class NetworkMolecule : MonoBehaviour
     public MoleculeHandler handler;
     
     private NetworkContext context;
-    private int previousIndex = 0;
-
+    
     private struct MoleculeState
     {
         public Vector3 scale;
@@ -64,6 +65,8 @@ public class NetworkMolecule : MonoBehaviour
 
     private void Update()
     {
+        int.TryParse(roomClient.Room[moleculeIndex], out currentIndex);
+        
         // Only send the message if the peer is host and that free movement is disabled
         if (handler.isHost && isFreeMovement == false)
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class AnimationHandler : MonoBehaviour
 {
@@ -69,4 +70,38 @@ public class AnimationHandler : MonoBehaviour
             handler.currentMoleculeTransformer.SetMoleculeAnimation(animationProgress);
         }
     }
+    
+    #region InputActions
+
+    public void ForwardAnimationPressed(InputAction.CallbackContext context)
+    {
+        // When manual controls are used, disable automatic playback
+        if (context.performed)
+        {
+            isMovingForward = true;
+            isPlaying = false;
+        }
+
+        if (context.canceled)
+        {
+            isMovingForward = false;
+        }
+    }
+
+    public void BackwardAnimationPressed(InputAction.CallbackContext context)
+    {
+        // When manual controls are used, disable automatic playback
+        if (context.performed)
+        {
+            isMovingBackward = true;
+            isPlaying = false;
+        }
+        
+        if (context.canceled)
+        {
+            isMovingBackward = false;
+        }
+    }
+
+    #endregion
 }

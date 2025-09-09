@@ -2,6 +2,7 @@ using System;
 using Ubiq.Rooms;
 using Ubiq.Spawning;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MoleculeHandler : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class MoleculeHandler : MonoBehaviour
     
     [Header("Messaging Data")]
     public bool isHost;
+    
+    [Header("Scaling Control")]
+    [Tooltip("How fast the model scales when a button is held.")]
+    public float scaleSpeed = 0.25f;
     
     [Header("Molecule Data")]
     public GameObject currentMolecule;
@@ -45,6 +50,25 @@ public class MoleculeHandler : MonoBehaviour
             currentRotation = currentMoleculeTransformer.currentRotation;
             currentScale = currentMoleculeTransformer.currentScale;
             currentAnimationProgress = currentMoleculeTransformer.currentAnimationProgress;
+            
+            // --- Scaling Logic ---
+            Vector3 newScale = currentScale;
+        
+            if (isScalingUp)
+            {
+                newScale += new Vector3(scaleSpeed, scaleSpeed, scaleSpeed) * Time.deltaTime;
+            }
+            else if (isScalingDown)
+            {
+                newScale -= new Vector3(scaleSpeed, scaleSpeed, scaleSpeed) * Time.deltaTime;
+                newScale = Vector3.Max(newScale, Vector3.zero);
+            }
+        
+            if (newScale != currentScale)
+            {
+                UpdateMoleculeTransform(newScale);
+            }
+            
         }
     }
 
@@ -81,6 +105,22 @@ public class MoleculeHandler : MonoBehaviour
         }
     }
 
+    public void UpdateMoleculeTransform(Vector3 scale)
+    {
+        if (currentMoleculeTransformer)
+        {
+            currentMoleculeTransformer.SetMoleculeTransform(scale, currentRotation);
+        }
+    }
+    
+    public void UpdateMoleculeTransform(Quaternion rotation)
+    {
+        if (currentMoleculeTransformer)
+        {
+            currentMoleculeTransformer.SetMoleculeTransform(currentScale, rotation);
+        }
+    }
+
     public void UpdateMoleculeAnimation(float animationProgress)
     {
         if (currentMoleculeTransformer)
@@ -96,5 +136,25 @@ public class MoleculeHandler : MonoBehaviour
             currentMoleculeTransformer.SetMoleculeState(scale, rotation, animationProgress);
         }
     } 
+    
+    
+    
+    #region InputActions
+    
+    private bool isScalingUp = false;
+    private bool isScalingDown = false;
+    public void ScaleUpPressed(InputAction.CallbackContext context)
+    {
+        if (context.performed) isScalingUp = true;
+        if (context.canceled) isScalingUp = false;
+    }
+
+    public void ScaleDownPressed(InputAction.CallbackContext context)
+    {
+        if (context.performed) isScalingDown = true;
+        if (context.canceled) isScalingDown = false;
+    }
+
+    #endregion
 }
 

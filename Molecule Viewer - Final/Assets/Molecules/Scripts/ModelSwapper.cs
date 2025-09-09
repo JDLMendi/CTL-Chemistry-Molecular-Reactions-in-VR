@@ -7,10 +7,12 @@ public class ModelSwapper : MonoBehaviour
 {
     public Molecule[] molecules;
     public int moleculeIndex;
+    public string currentMoleculeName;
     
     [Header("References")]
     public Image modelImage;
     public Text moleculeName;
+    public Text moleculeLabel;
     
     [Header("Events")]
     public UnityEvent<int> onModelLoaded;
@@ -42,12 +44,14 @@ public class ModelSwapper : MonoBehaviour
     public void UpdateModel(int moleculeIndex)
     {
         this.moleculeIndex = moleculeIndex;
+        currentMoleculeName = molecules[moleculeIndex].moleculeName;
         LoadModel();
     }
 
     public void LoadModel()
     {
         Debug.Log("Loading Model in Index: " +  moleculeIndex);
+        currentMoleculeName = molecules[moleculeIndex].moleculeName;
         onModelLoaded?.Invoke(moleculeIndex);
     }
 }
