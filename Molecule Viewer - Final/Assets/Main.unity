@@ -1308,7 +1308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Target: {fileID: 1609275452}
-  m_TargetOffset: {x: 0, y: -0.3, z: 0.6}
+  m_TargetOffset: {x: 0, y: -0.35, z: 0.6}
   m_FollowInLocalSpace: 0
   m_ApplyTargetInLocalSpace: 0
   m_MovementSpeed: 6
@@ -4176,7 +4176,7 @@ Transform:
   m_GameObject: {fileID: 1445773901}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.318, y: 1.828, z: 0}
+  m_LocalPosition: {x: 2.318, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4698,7 +4698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2218496723442559053, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.25
+      value: -1.89
       objectReference: {fileID: 0}
     - target: {fileID: 2218496723442559053, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
       propertyPath: m_LocalRotation.w

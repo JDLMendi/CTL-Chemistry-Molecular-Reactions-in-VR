@@ -87,15 +87,19 @@ public class NetworkMolecule : MonoBehaviour
 
     private void ToggleFreeMovement(bool toggle)
     {
+        var toolbarManager = toolbar.GetComponent<ToolbarManager>();
+        
         handler.currentMoleculeTransformer.ToggleGrabbable(toggle);
         handler.animationHandler.enabled = toggle;
         toolbar.SetActive(toggle);
-        swapperButton.interactable = false;
+
+        swapperButton.interactable = handler.isHost != false;
         
         if (toggle == false)
         {
+            Debug.Log("Toolbar Reset");
             swapperButton.interactable = true;
-            toolbar.GetComponent<ToolbarManager>().ResetToolbar();
+            toolbarManager.ResetToolbar();
         }
     }
 

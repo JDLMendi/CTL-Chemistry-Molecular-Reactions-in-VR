@@ -28,7 +28,7 @@ public class AnimationHandler : MonoBehaviour
     
     private void Start()
     {
-        handler = FindObjectOfType<MoleculeHandler>();
+        handler = FindFirstObjectByType<MoleculeHandler>();
     }
 
     private void Update()

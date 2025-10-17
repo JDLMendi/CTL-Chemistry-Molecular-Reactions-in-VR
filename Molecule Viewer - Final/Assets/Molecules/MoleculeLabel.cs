@@ -12,13 +12,13 @@ public class MoleculeLabel : MonoBehaviour
     {
         if (swapper.currentMoleculeName != "")
         {
-            labelText.text = swapper.currentMoleculeName;
             canvas.SetActive(true);
+            labelText.text = swapper.currentMoleculeName;
         }
         else
         {
-            labelText.text = "";
             canvas.SetActive(false);
+            labelText.text = "";
         }
     }
 }
