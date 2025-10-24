@@ -7,4 +7,6 @@ public class Molecule : ScriptableObject
     public Sprite image;
     public string moleculeName;
     public GameObject prefab;
+
+    public Quaternion[] specialRotations;
 }
