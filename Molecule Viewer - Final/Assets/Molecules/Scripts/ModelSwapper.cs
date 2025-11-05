@@ -13,11 +13,10 @@ public class ModelSwapper : MonoBehaviour
     public Image modelImage;
     public Text moleculeName;
     public Text moleculeLabel;
-    
-    [Header("Events")]
-    public UnityEvent<int> onModelLoaded;
 
-    private void Awake()
+    [Header("Events")] public UnityEvent<int> onModelLoaded;
+
+    private void Start()
     {
         onModelLoaded = new UnityEvent<int>();
     }
@@ -52,6 +51,6 @@ public class ModelSwapper : MonoBehaviour
     {
         Debug.Log("Loading Model in Index: " +  moleculeIndex);
         currentMoleculeName = molecules[moleculeIndex].moleculeName;
-        onModelLoaded?.Invoke(moleculeIndex);
+        onModelLoaded.Invoke(moleculeIndex);
     }
 }
