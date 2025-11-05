@@ -16,4 +16,4 @@ MonoBehaviour:
   moleculeName: Epoxide Opening to Give Chair Conformation
   prefab: {fileID: 0}
   specialRotations:
-  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0.15307207, z: 0, w: 0.988215}
